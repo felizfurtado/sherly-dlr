@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 20px;
+}
+
+.gallery .item {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.gallery .item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: 0.3s ease;
+}
+
+.gallery .item img:hover {
+  transform: scale(1.03);
+}
+
+/* Special sizes */
+.gallery .item.tall {
+  grid-row: span 2;
+}
+
+.gallery .item.wide {
+  grid-column: span 2;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gallery .item.wide {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery .item.wide,
+  .gallery .item.tall {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="gallery">
+  <div class="item"><img src="img1.jpg" /></div>
+  <div class="item"><img src="img2.jpg" /></div>
+  <div class="item tall"><img src="img3.jpg" /></div>
+  <div class="item"><img src="img4.jpg" /></div>
+  <div class="item wide"><img src="img5.jpg" /></div>
+  <div class="item"><img src="img6.jpg" /></div>
+  <div class="item wide"><img src="img7.jpg" /></div>
+  <div class="item"><img src="img8.jpg" /></div>
+  <div class="item"><img src="img9.jpg" /></div>
+</div>
+
+    
+</body>
+</html>

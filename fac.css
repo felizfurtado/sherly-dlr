@@ -1,0 +1,304 @@
+/* facilities.css - Simple, clean styles for Facilities page */
+:root {
+    --primary-color: #fea70a;
+    --dark-color: #000000;
+    --light-color: #ffffff;
+    --font-main: 'Montserrat', sans-serif;
+    --font-secondary: 'Inter', sans-serif;
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-secondary);
+    background-color: var(--dark-color);
+    color: var(--light-color);
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+
+
+/* Facilities Section */
+.facilities-section {
+    padding: 140px 0 100px;
+}
+
+.facilities-title {
+    font-family: var(--font-main);
+    font-size: 3rem;
+    color: var(--light-color);
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.facilities-subtitle {
+    font-size: 1.5rem;
+    color: var(--light-color);
+    margin-bottom: 60px;
+    text-align: left;
+    max-width: 800px;
+}
+
+.accent-text {
+    color: var(--primary-color);
+    font-style: italic;
+    font-weight: 600;
+}
+
+/* Facilities Grid - 2 cards per row on desktop */
+.facilities-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+}
+
+.facility-card {
+    background-color: transparent;
+}
+
+.facility-image {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.facility-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.facility-content {
+    text-align: right;
+}
+
+.facility-content p {
+    font-size: 1.3rem;
+    color: var(--light-color);
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.coming-soon {
+    font-size: 1rem !important;
+    color: #999 !important;
+    font-style: italic;
+}
+
+/* Footer */
+.main-footer {
+    background-color: var(--dark-color);
+    padding: 60px 0 30px;
+    border-top: 1px solid #333;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-logo img {
+    height: 80px;
+    width: auto;
+    margin-bottom: 15px;
+}
+
+.footer-tagline {
+    font-size: 1rem;
+    color: #999;
+    max-width: 250px;
+}
+
+.footer-heading {
+    font-size: 1.3rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-family: var(--font-main);
+}
+
+.footer-links {
+    list-style: none;
+}
+
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.contact-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+.contact-item p {
+    margin: 0;
+    color: #ccc;
+    line-height: 1.5;
+    font-size: 1rem;
+}
+
+.footer-bottom {
+    border-top: 1px solid #333;
+    padding-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.copyright {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+}
+
+.social-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #333;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.social-links a:hover {
+    background-color: var(--primary-color);
+}
+
+.social-links img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .facilities-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .facility-image {
+        height: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
+    
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 80%;
+        height: 100vh;
+        background-color: var(--dark-color);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 100px 30px 30px;
+        gap: 20px;
+        transition: left 0.3s;
+    }
+    
+    .nav-menu.active {
+        left: 0;
+    }
+    
+    .facilities-section {
+        padding: 120px 0 80px;
+    }
+    
+    .facilities-title {
+        font-size: 2.5rem;
+        text-align: center;
+    }
+    
+    .facilities-subtitle {
+        font-size: 1.3rem;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .facility-content {
+        text-align: center;
+    }
+    
+    .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 30px;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .facilities-title {
+        font-size: 2rem;
+    }
+    
+    .facilities-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .facility-image {
+        height: 200px;
+    }
+    
+    .facility-content p {
+        font-size: 1.1rem;
+    }
+}
