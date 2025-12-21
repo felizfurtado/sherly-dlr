@@ -71,42 +71,215 @@
             </div>
         </section>
 
-        <!-- Three Images Section -->
-        <section class="three-images-section">
-            <div class="container">
-                <div class="images-grid">
-                    <div class="image-item">
-                        <img src="assets/DSC03446 1.png" alt="Training session at DLR" />
-                    </div>
-                    <div class="image-item">
-                        <img src="assets/DSC03481 1.png" alt="Casino dealing training" />
-                    </div>
-                    <div class="image-item">
-                        <img src="assets/generated-image (1) 1.png" alt="Professional environment" />
-                    </div>
+
+<style>
+    /* Infinite Slider Styles */
+.three-images-section {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.slider-container {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    position: relative;
+    left: 0%;
+    overflow: hidden;
+}
+
+.slider-track {
+    display: flex;
+    animation: slideInfinite 20s linear infinite;
+    gap: 20px;
+    width: 200%; /* MUST be 200% for 6 items (3 original + 3 duplicates) */
+}
+
+.slider-item {
+    flex: 0 0 calc(16.666% - 13.33px); /* 100% / 6 items = 16.666% */
+    min-width: 0;
+    aspect-ratio: 3/4;
+}
+
+.slider-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+/* Seamless infinite animation */
+@keyframes slideInfinite {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%); /* Move exactly half (from first set to second set) */
+    }
+}
+
+/* Responsive adjustments - Tablet */
+@media (max-width: 992px) {
+    .slider-track {
+        width: 200%; /* Still 200% for 4 items visible (2 original + 2 duplicates) */
+        animation: slideInfinite 15s linear infinite;
+    }
+    
+    .slider-item {
+        flex: 0 0 calc(25% - 10px); /* 100% / 4 = 25% */
+        aspect-ratio: 4/3;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .slider-track {
+        width: 200%; /* Still 200% for 2 items visible (1 original + 1 duplicate) */
+        animation: slideInfinite 12s linear infinite;
+    }
+    
+    .slider-item {
+        flex: 0 0 calc(50% - 10px); /* 100% / 2 = 50% */
+        aspect-ratio: 16/9; /* Changed back to landscape for mobile */
+    }
+    
+    .slider-item img {
+        height: 250px;
+    }
+}
+
+/* Remove the old images-grid styles */
+.images-grid {
+    display: none;
+}
+</style>
+<section class="three-images-section">
+    <div class="container">
+        <div class="slider-container">
+            <div class="slider-track">
+                <!-- First set of images -->
+                <div class="slider-item">
+                    <img src="assets/DSC03446 1.png" alt="Training session at DLR" />
+                </div>
+                <div class="slider-item">
+                    <img src="assets/DSC03481 1.png" alt="Casino dealing training" />
+                </div>
+                
+                <!-- Duplicate images for seamless infinite effect -->
+                <div class="slider-item">
+                    <img src="assets/DSC03492-min.JPG" alt="Training session at DLR" />
+                </div>
+                <div class="slider-item">
+                    <img src="assets/generated-image (1) 1.png" alt="Professional environment" />
+                </div>
+                <div class="slider-item">
+                    <img src="assets/DSC03498-min.JPG" alt="Casino dealing training" />
+                </div>
+                <div class="slider-item">
+                    <img src="assets/DSC03500-min.JPG" alt="Professional environment" />
                 </div>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
+
+
+
+
 
         <!-- Statistics -->
-        <section class="stats-section" >
-            <div class="container" style="border: 2px solid var(--primary-color); padding: 40px; border-radius: 2cap;">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3 class="stat-number">35+</h3>
-                        <p class="stat-label">Student Alumni</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3 class="stat-number">75+</h3>
-                        <p class="stat-label">Students Currently Enrolled</p>
-                    </div>
-                    <div class="stat-card">
-                        <h3 class="stat-number">10+</h3>
-                        <p class="stat-label">Faculty Members</p>
-                    </div>
-                </div>
+<section class="stats-section">
+    <div class="container" style="border: 2px solid var(--primary-color); padding: 40px; border-radius: 2cap;">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 class="stat-number" data-target="35">0</h3>
+                <p class="stat-label">Student Alumni</p>
             </div>
-        </section>
+            <div class="stat-card">
+                <h3 class="stat-number" data-target="75">0</h3>
+                <p class="stat-label">Students Currently Enrolled</p>
+            </div>
+            <div class="stat-card">
+                <h3 class="stat-number" data-target="10">0</h3>
+                <p class="stat-label">Faculty Members</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Count-up animation function
+function animateCountUp() {
+    const counters = document.querySelectorAll('.stat-number');
+    const speed = 100; // Lower = faster
+    
+    counters.forEach(counter => {
+        const target = parseInt(counter.getAttribute('data-target'));
+        const count = parseInt(counter.innerText);
+        const increment = target / speed;
+        
+        // Only animate if not already counting
+        if (count < target) {
+            const updateCount = () => {
+                let current = parseFloat(counter.innerText);
+                
+                // If we haven't reached the target
+                if (current < target) {
+                    // Add increment, but don't exceed target
+                    const newValue = Math.min(current + increment, target);
+                    counter.innerText = Math.ceil(newValue);
+                    
+                    // Continue animation
+                    setTimeout(updateCount, 20);
+                } else {
+                    // Ensure final value is exactly the target
+                    counter.innerText = target;
+                }
+            };
+            
+            updateCount();
+        }
+    });
+}
+
+// Start animation when element comes into view
+function startCounterWhenVisible() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Wait a bit for smoothness
+                setTimeout(animateCountUp, 300);
+                observer.unobserve(entry.target); // Stop observing after triggering
+            }
+        });
+    }, {
+        threshold: 0.5, // Trigger when 50% visible
+        rootMargin: '0px 0px -50px 0px' // Trigger a bit before full visibility
+    });
+    
+    const statsSection = document.querySelector('.stats-section');
+    if (statsSection) {
+        observer.observe(statsSection);
+    }
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', startCounterWhenVisible);
+
+// Optional: Restart animation if user scrolls back up (remove if not needed)
+let hasAnimated = false;
+window.addEventListener('scroll', () => {
+    const statsSection = document.querySelector('.stats-section');
+    if (statsSection && !hasAnimated) {
+        const rect = statsSection.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.8 && rect.bottom > 0) {
+            animateCountUp();
+            hasAnimated = true;
+        }
+    }
+});
+</script>
 
         <!-- About Us -->
         <section class="about-section">
@@ -118,7 +291,7 @@
                     <div class="about-text">
                         <h3 class="about-title">About Us</h3>
                         <p class="about-description">
-                            At DLR Training Institute, we bridge the gap between ambition and achievement in Goa's thriving casino industry. Our comprehensive programs combine theoretical knowledge with hands-on experience, preparing students for successful careers.
+                            At DLR Training Institute, we bridge the gap between ambition and achievement in Goa's thriving casino industry. Our comprehensive programs combine theoretical knowledge with hands-on experience.
                         </p>
                         <a href="about.html" class="btn btn-feature">Learn More</a>
                     </div>
@@ -136,8 +309,7 @@
                     <div class="courses-text">
                         <h3 class="courses-title">Our Courses</h3>
                         <p class="courses-description">
-                            We offer specialized training programs in casino dealing, security management, bartending, and surveillance. Each course is designed with industry input to ensure maximum employability.
-                        </p>
+                            At DLR Training Institute, we bridge the gap between ambition and achievement in Goa's thriving casino industry. Our comprehensive programs combine theoretical knowledge with hands-on experience.
                         <a href="courses.html" class="btn btn-feature">Explore Courses</a>
                     </div>
                 </div>
@@ -215,7 +387,7 @@
                     <a href="#" aria-label="LinkedIn">
                         <img src="assets/contact_icons/LinkedIn.png" alt="LinkedIn" />
                     </a>
-                    <a href="#" aria-label="Instagram">
+                    <a href="https://www.instagram.com/dlrtraininginstitute?igsh=Y3Y1c3V3bWF3bzZ2" aria-label="Instagram">
                         <img src="assets/contact_icons/Logo Instagram.png" alt="Instagram" />
                     </a>
                     <a href="#" aria-label="X (Twitter)">
@@ -227,6 +399,65 @@
     </footer>
 
     <!-- JavaScript -->
+
+   <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const typingText = document.querySelector('.typing-text');
+    
+    if (typingText) {
+        const fullText = typingText.textContent;
+        
+        // Create a container for the text and cursor
+        const container = document.createElement('span');
+        container.className = 'typing-container';
+        typingText.parentNode.insertBefore(container, typingText);
+        container.appendChild(typingText);
+        
+        // Add cursor as a separate element
+        const cursor = document.createElement('span');
+        cursor.className = 'typing-cursor';
+        cursor.textContent = ' ';
+        container.appendChild(cursor);
+        
+        // Reset text
+        typingText.textContent = '';
+        let letterIndex = 0;
+        let isDeleting = false;
+        
+        function type() {
+            if (!isDeleting) {
+                // Typing phase
+                if (letterIndex < fullText.length) {
+                    typingText.textContent = fullText.substring(0, letterIndex + 1);
+                    letterIndex++;
+                    setTimeout(type, 100);
+                } else {
+                    // Finished typing, wait 2 seconds then start deleting
+                    isDeleting = true;
+                    setTimeout(type, 2000);
+                }
+            } else {
+                // Deleting phase
+                if (letterIndex > 0) {
+                    typingText.textContent = fullText.substring(0, letterIndex - 1);
+                    letterIndex--;
+                    setTimeout(type, 50);
+                } else {
+                    // Finished deleting, wait 1 second then start typing again
+                    isDeleting = false;
+                    setTimeout(type, 1000);
+                }
+            }
+        }
+        
+        // Start the typing animation
+        setTimeout(type, 500);
+    }
+});
+</script>
+
+
+
     <script>
         // Mobile menu toggle
         document.addEventListener('DOMContentLoaded', function() {

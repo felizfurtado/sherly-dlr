@@ -75,6 +75,85 @@
       <h1 class="gallery-title">From <span style="color: var(--primary-color);">DLR Training</span></h1>
  
     </div>
+
+
+    <style>
+      /* Gallery Image Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Apply animation to gallery items */
+.gallery .item {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Stagger the animations for each item */
+.gallery .item:nth-child(1) { animation-delay: 0.1s; }
+.gallery .item:nth-child(2) { animation-delay: 0.2s; }
+.gallery .item:nth-child(3) { animation-delay: 0.3s; }
+.gallery .item:nth-child(4) { animation-delay: 0.4s; }
+.gallery .item:nth-child(5) { animation-delay: 0.5s; }
+.gallery .item:nth-child(6) { animation-delay: 0.6s; }
+.gallery .item:nth-child(7) { animation-delay: 0.7s; }
+.gallery .item:nth-child(8) { animation-delay: 0.8s; }
+.gallery .item:nth-child(9) { animation-delay: 0.9s; }
+
+/* Add hover effect for images */
+.gallery .item img {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.gallery .item:hover img {
+    transform: scale(1.03);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal image animation */
+.image-modal {
+    animation: fadeIn 0.3s ease;
+}
+
+.image-modal img {
+    animation: scaleIn 0.4s ease 0.1s both;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+    </style>
       <section class="gallery-section">
         
  
@@ -151,6 +230,9 @@
         </div>
       </section>
     </main>
+
+
+  
 
     <!-- Footer -->
     <footer class="main-footer">
@@ -230,7 +312,7 @@
             <a href="#" aria-label="LinkedIn">
               <img src="assets/contact_icons/LinkedIn.png" alt="LinkedIn" />
             </a>
-            <a href="#" aria-label="Instagram">
+            <a href="https://www.instagram.com/dlrtraininginstitute?igsh=Y3Y1c3V3bWF3bzZ2" aria-label="Instagram">
               <img
                 src="assets/contact_icons/Logo Instagram.png"
                 alt="Instagram"

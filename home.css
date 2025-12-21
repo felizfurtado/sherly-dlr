@@ -825,9 +825,10 @@ p {
     }
     
     .typing-text {
-        animation: typing 2.5s steps(20, end), blink-caret 0.75s step-end infinite;
-    }
-    
+
+    animation: 
+        type-delete 12s infinite,
+}
     .hero-buttons {
         flex-direction: column;
         align-items: center;

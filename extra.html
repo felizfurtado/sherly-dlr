@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses with Stack Animation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #fea70a;
+            --secondary-color: #d18c00;
+            --dark-color: #000000;
+            --light-color: #ffffff;
+            --gray-color: #f5f5f5;
+            --text-color: #333333;
+            --font-main: 'Montserrat', sans-serif;
+            --font-secondary: 'Inter', sans-serif;
+            --font-accent: 'Playfair Display', serif;
+        }
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-secondary);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-color: var(--dark-color);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+        }
+
+        .italic-text {
+            font-family: var(--font-accent);
+            font-style: italic;
+            font-weight: normal;
+            color: var(--light-color);
+        }
+
+        /* Main Header */
+        .main-header {
+            padding: 100px 0 60px;
+            background-color: var(--dark-color);
+            text-align: center;
+            position: relative;
+            z-index: 100;
+        }
+
+        .section-title {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .scroll-indicator {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-top: 20px;
+            font-family: var(--font-accent);
+            font-style: italic;
+            position: relative;
+        }
+
+        /* Course Stack Container */
+        .course-stack {
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Course Section - Each is a separate stacked section */
+        .course-section {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 100px 0;
+            background-color: var(--dark-color);
+            z-index: 1;
+        }
+
+        /* Z-index ordering for stacking effect */
+        .course-section:nth-child(1) { z-index: 5; }
+        .course-section:nth-child(2) { z-index: 4; }
+        .course-section:nth-child(3) { z-index: 3; }
+        .course-section:nth-child(4) { z-index: 2; }
+        .course-section:nth-child(5) { z-index: 1; }
+
+        /* Course Card - EXACTLY like original */
+        .course-card {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+            background-color: var(--primary-color);
+            border-radius: 15px;
+            padding: 40px;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(100px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Active card styling */
+        .course-section.active .course-card {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Reverse card styling - EXACTLY like original */
+        .course-section.reverse .course-card {
+            flex-direction: row-reverse;
+            background-color: var(--light-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .course-image {
+            flex: 1;
+        }
+
+        .course-image img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-content {
+            flex: 1;
+        }
+
+        .course-header {
+            margin-bottom: 30px;
+        }
+
+        .course-name {
+            font-size: 2.5rem;
+            color: var(--light-color);
+            margin-bottom: 10px;
+            font-family: var(--font-accent);
+        }
+
+        .course-subtitle {
+            font-size: 1.3rem;
+            color: var(--dark-color);
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .course-details {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            display: inline-block;
+            min-width: 140px;
+        }
+
+        /* Reverse card text colors - EXACTLY like original */
+        .course-section.reverse .course-name,
+        .course-section.reverse .course-subtitle,
+        .course-section.reverse .detail-label {
+            color: var(--dark-color);
+        }
+
+        .course-section.reverse .course-details {
+            color: #555;
+        }
+
+        /* Scroll navigation */
+        .scroll-navigation {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            opacity: 0.4;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-dot.active {
+            opacity: 1;
+            transform: scale(1.4);
+            box-shadow: 0 0 15px rgba(254, 167, 10, 0.7);
+        }
+
+        .nav-dot:hover {
+            opacity: 0.8;
+            transform: scale(1.3);
+        }
+
+        .nav-dot::after {
+            content: attr(data-title);
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--dark-color);
+            color: var(--primary-color);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            border: 1px solid var(--primary-color);
+        }
+
+        .nav-dot:hover::after {
+            opacity: 1;
+        }
+
+        /* Scroll hint animation */
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: var(--primary-color);
+            font-family: var(--font-accent);
+            font-style: italic;
+            font-size: 1.1rem;
+            opacity: 0;
+            animation: fadeInOut 3s infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-10px); }
+        }
+
+        /* Responsive adjustments - EXACTLY like original */
+        @media (max-width: 992px) {
+            .course-card {
+                flex-direction: column;
+                gap: 40px;
+            }
+            
+            .course-section.reverse .course-card {
+                flex-direction: column;
+            }
+            
+            .course-image img {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 30px;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .course-name {
+                font-size: 2rem;
+            }
+            
+            .course-section {
+                height: auto;
+                min-height: 100vh;
+                padding: 80px 0;
+            }
+            
+            .scroll-navigation {
+                right: 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .course-card {
+                padding: 25px 20px;
+                gap: 30px;
+            }
+            
+            .course-name {
+                font-size: 1.8rem;
+            }
+            
+            .course-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .detail-label {
+                min-width: 120px;
+            }
+            
+            .scroll-navigation {
+                right: 10px;
+            }
+            
+            .nav-dot::after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container">
+            <h2 class="section-title">
+                Courses <span class="italic-text">Offered</span>
+            </h2>
+            <div class="scroll-indicator">Scroll to explore courses ↓</div>
+        </div>
+    </header>
+
+    <!-- Course Stack Container -->
+    <div class="course-stack">
+        <!-- Course Section 1 - Indian Flush -->
+        <section class="course-section active" id="section1">
+            <div class="container">
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="https://images.unsplash.com/photo-1527525443983-6e60c75fff46?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Indian Flush Training" />
+                    </div>
+                    <div class="course-content">
+                        <div class="course-header">
+                            <h3 class="course-name">INDIAN FLUSH</h3>
+                            <p class="course-subtitle">
+                                Training in dealing and pace control
+                            </p>
+                        </div>
+                        <div class="course-details">
+                            <p>
+                                <span class="detail-label">Description:</span> Normal,
+                                Variation, Zandu, Zandu variation, Flipper
+                            </p>
+                            <p>
+                                <span class="detail-label">Course Length:</span> For freshers
+                                1 month
+                            </p>
+                            <p>
+                                <span class="detail-label">Campus Hours/Days:</span> Max 2
+                                hours per day
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-hint">Scroll for next course</div>
+        </section>
+
+        <!-- Course Section 2 - All Pit Games -->
+        <section class="course-section reverse" id="section2">
+            <div class="container">
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Pit Games Training" />
+                    </div>
+                    <div class="course-content">
+                        <div class="course-header">
+                            <h3 class="course-name">ALL PIT GAMES</h3>
+                            <p class="course-subtitle">
+                                Learn rules & style, table etiquette, dealing, wheel operations
+                            </p>
+                        </div>
+                        <div class="course-details">
+                            <p>
+                                <span class="detail-label">Description:</span> Roulette, Baccarat, Black Jack, Mini Flush, 3 Card Poker, Andar/ Bahar, Dragon Tiger, Casino War
+                            </p>
+                            <p>
+                                <span class="detail-label">Course Length:</span> For freshers 2 month
+                            </p>
+                            <p>
+                                <span class="detail-label">Campus Hours/Days:</span> Max 2 hours per day 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-hint">Scroll for next course</div>
+        </section>
+
+        <!-- Course Section 3 - Poker -->
+        <section class="course-section" id="section3">
+            <div class="container">
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="https://images.unsplash.com/photo-1617650712278-434b71f82cf0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Poker Training" />
+                    </div>
+                    <div class="course-content">
+                        <div class="course-header">
+                            <h3 class="course-name">POKER</h3>
+                            <p class="course-subtitle">
+                                Master this global poker variant
+                            </p>
+                        </div>
+                        <div class="course-details">
+                            <p>
+                                <span class="detail-label">Course Length:</span> For freshers 2 months and for experienced max 1 month
+                            </p>
+                            <p>
+                                <span class="detail-label">Campus Hours/Days:</span> Max 2 hours per day 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-hint">Scroll for next course</div>
+        </section>
+
+        <!-- Course Section 4 - Short Term Course -->
+        <section class="course-section reverse" id="section4">
+            <div class="container">
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Short Term Course" />
+                    </div>
+                    <div class="course-content">
+                        <div class="course-header">
+                            <h3 class="course-name">SHORT TERM COURSE</h3>
+                        </div>
+                        <div class="course-details">
+                            <p>
+                                <span class="detail-label">Description:</span> Our Short-Term Course is designed to refresh and polish the skills of students who have had a gap or have forgotten the rules and techniques of various games. This course provides focused training for a duration of 15 to 20 days, helping students regain confidence and get back to their best form.
+                            </p>
+                            <p>
+                                <span class="detail-label">Course Length:</span> For freshers 1 month
+                            </p>
+                            <p>
+                                <span class="detail-label">Campus Hours/Days:</span> Max 2 hours per day 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-hint">Scroll for next course</div>
+        </section>
+
+        <!-- Course Section 5 - Cash Desk -->
+        <section class="course-section" id="section5">
+            <div class="container">
+                <div class="course-card">
+                    <div class="course-image">
+                        <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Cash Desk Training" />
+                    </div>
+                    <div class="course-content">
+                        <div class="course-header">
+                            <h3 class="course-name">CASH DESK/ CASHIER</h3>
+                        </div>
+                        <div class="course-details">
+                            <p>
+                                <span class="detail-label">Course Length:</span> For freshers 2 months and for experienced max 1 month
+                            </p>
+                            <p>
+                                <span class="detail-label">Campus Hours/Days:</span> Max 2 hours per day 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-hint">All courses displayed</div>
+        </section>
+    </div>
+
+    <!-- Navigation Dots -->
+    <div class="scroll-navigation">
+        <div class="nav-dot active" data-title="Indian Flush" data-section="section1"></div>
+        <div class="nav-dot" data-title="Pit Games" data-section="section2"></div>
+        <div class="nav-dot" data-title="Poker" data-section="section3"></div>
+        <div class="nav-dot" data-title="Short Term" data-section="section4"></div>
+        <div class="nav-dot" data-title="Cash Desk" data-section="section5"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize GSAP ScrollTrigger
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Get all elements
+            const sections = document.querySelectorAll('.course-section');
+            const navDots = document.querySelectorAll('.nav-dot');
+            const stackContainer = document.querySelector('.course-stack');
+            
+            // Set total height for scroll container
+            const sectionHeight = window.innerHeight;
+            const totalHeight = sectionHeight * sections.length;
+            stackContainer.style.height = totalHeight + 'px';
+            
+            // Initialize all sections as hidden
+            sections.forEach(section => {
+                section.classList.remove('active');
+                gsap.set(section, { opacity: 0 });
+            });
+            
+            // Set first section as active
+            sections[0].classList.add('active');
+            gsap.to(sections[0], { opacity: 1, duration: 0.5 });
+            
+            // Create animations for each section
+            sections.forEach((section, index) => {
+                const card = section.querySelector('.course-card');
+                
+                // Create entrance animation for card
+                gsap.fromTo(card,
+                    {
+                        opacity: 0,
+                        y: 100,
+                        scale: 0.95
+                    },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        scale: 1,
+                        duration: 0.8,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: section,
+                            start: "top center",
+                            end: "bottom center",
+                            toggleActions: "play none none reverse",
+                            onEnter: () => {
+                                // Show current section
+                                section.classList.add('active');
+                                gsap.to(section, { opacity: 1, duration: 0.5 });
+                                
+                                // Update navigation dots
+                                navDots.forEach(dot => dot.classList.remove('active'));
+                                navDots[index].classList.add('active');
+                                
+                                // Hide previous section if not first
+                                if (index > 0) {
+                                    gsap.to(sections[index - 1], { opacity: 0, duration: 0.5 });
+                                }
+                            },
+                            onLeaveBack: () => {
+                                // Hide current section when going back
+                                gsap.to(section, { opacity: 0, duration: 0.5 });
+                                section.classList.remove('active');
+                                
+                                // Show previous section
+                                if (index > 0) {
+                                    sections[index - 1].classList.add('active');
+                                    gsap.to(sections[index - 1], { opacity: 1, duration: 0.5 });
+                                    
+                                    // Update navigation dots
+                                    navDots.forEach(dot => dot.classList.remove('active'));
+                                    navDots[index - 1].classList.add('active');
+                                }
+                            }
+                        }
+                    }
+                );
+            });
+            
+            // Navigation dot click functionality
+            navDots.forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const sectionId = this.getAttribute('data-section');
+                    const targetSection = document.getElementById(sectionId);
+                    
+                    if (targetSection) {
+                        // Calculate scroll position
+                        const scrollPosition = targetSection.offsetTop - (window.innerHeight * 0.1);
+                        
+                        // Smooth scroll to section
+                        window.scrollTo({
+                            top: scrollPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                const currentIndex = Array.from(navDots).findIndex(dot => dot.classList.contains('active'));
+                
+                if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    if (currentIndex < navDots.length - 1) {
+                        navDots[currentIndex + 1].click();
+                    }
+                } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    if (currentIndex > 0) {
+                        navDots[currentIndex - 1].click();
+                    }
+                }
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                const newSectionHeight = window.innerHeight;
+                const newTotalHeight = newSectionHeight * sections.length;
+                stackContainer.style.height = newTotalHeight + 'px';
+            });
+        });
+    </script>
+</body>
+</html>
